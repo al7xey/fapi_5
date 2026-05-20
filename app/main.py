@@ -2,10 +2,11 @@ import os
 
 from fastapi import FastAPI
 
-from app.routers import tasks
+from app.routers import rooms, tasks
 
 app = FastAPI(title="Control Work 5 API")
 app.include_router(tasks.router)
+app.include_router(rooms.router)
 
 
 @app.get("/health", tags=["health"])
