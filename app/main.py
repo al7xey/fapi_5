@@ -2,10 +2,12 @@ import os
 
 from fastapi import FastAPI
 
-from app.routers import rooms, tasks
+from app.routers import admin, rooms, tasks, users
 
 app = FastAPI(title="Control Work 5 API")
 app.include_router(tasks.router)
+app.include_router(users.router)
+app.include_router(admin.router)
 app.include_router(rooms.router)
 
 

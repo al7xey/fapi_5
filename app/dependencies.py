@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Header, HTTPException, status
+from fastapi import Depends, Header, HTTPException, status
 
 from app.schemas import CurrentUser
 from app.storage import task_storage
@@ -27,7 +27,7 @@ def get_current_user(
     return CurrentUser(id=user_id, role=x_user_role)
 
 
-def require_admin(user: Annotated[CurrentUser, get_current_user]) -> CurrentUser:
+def require_admin(user: Annotated[CurrentUser, Depends(get_current_user)]) -> CurrentUser:
     if user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
