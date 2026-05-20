@@ -1,17 +1,18 @@
-# FastAPI Control Work 5
+# Контрольная работа №5
 
-FastAPI application for task management, WebSocket rooms, dependency injection,
-and integration testing.
+Проект на FastAPI для управления задачами, работы с WebSocket-комнатами,
+внедрения зависимостей, проверки прав доступа и интеграционного тестирования.
 
-## Project Structure
+## Структура проекта
 
-- `app/main.py` creates the FastAPI application.
-- `app/routers/` contains task, user, admin, and room routes.
-- `app/dependencies.py` contains authentication and authorization dependencies.
-- `app/storage.py` contains the in-memory task storage.
-- `tests/` contains integration tests for HTTP routes and WebSocket behavior.
+- `app/main.py` — создание FastAPI-приложения и подключение роутеров.
+- `app/routers/` — маршруты для задач, пользователей, администратора и комнат.
+- `app/dependencies.py` — зависимости для авторизации и проверки роли администратора.
+- `app/storage.py` — in-memory хранилище задач.
+- `app/room_manager.py` — менеджер WebSocket-комнат.
+- `tests/` — интеграционные тесты HTTP-эндпоинтов и WebSocket.
 
-## Local Run
+## Локальный запуск
 
 ```bash
 python -m venv .venv
@@ -25,39 +26,48 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-The API will be available at `http://localhost:8000`.
+API будет доступно по адресу `http://localhost:8000`.
 
-## Tests
+## Запуск тестов
 
 ```bash
 pytest
 ```
 
-## Docker
+## Запуск через Docker
 
 ```bash
 docker compose up --build
 ```
 
-Check the tasks endpoint:
+Проверка эндпоинта задач:
 
 ```bash
 curl http://localhost:8000/tasks -H "X-User-Id: 10"
 ```
 
-Expected response for an empty task list:
+Ожидаемый ответ для пустого списка задач:
 
 ```json
 []
 ```
 
-Check service health:
+Проверка состояния приложения:
 
 ```bash
 curl http://localhost:8000/health
 ```
 
-## Main Endpoints
+При запуске через Docker ответ будет таким:
+
+```json
+{
+  "status": "ok",
+  "env": "docker"
+}
+```
+
+## Основные эндпоинты
 
 - `POST /tasks`
 - `GET /tasks`
@@ -70,3 +80,17 @@ curl http://localhost:8000/health
 - `DELETE /admin/tasks/{task_id}`
 - `GET /rooms/{room_id}/users`
 - `WebSocket /ws/rooms/{room_id}?username=alice`
+
+## Авторизация
+
+Для HTTP-эндпоинтов используется заголовок:
+
+```http
+X-User-Id: 10
+```
+
+Для административных маршрутов дополнительно нужна роль:
+
+```http
+X-User-Role: admin
+```
