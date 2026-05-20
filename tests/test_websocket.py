@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+from starlette.websockets import WebSocketDisconnect
 
 from app.main import app
 from app.room_manager import room_manager
@@ -26,6 +27,14 @@ def test_connect_to_room_with_valid_username(client):
         }
         response = client.get("/rooms/python/users")
         assert response.json() == {"room_id": "python", "users": ["alice"]}
+
+
+def test_blank_username_closes_connection_with_policy_violation(client):
+    with pytest.raises(WebSocketDisconnect) as exc_info:
+        with client.websocket_connect("/ws/rooms/python?username=%20%20"):
+            pass
+
+    assert exc_info.value.code == 1008
 
 
 def test_send_message_and_receive_response(client):
